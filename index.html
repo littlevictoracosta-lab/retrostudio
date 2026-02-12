@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RetroStudio | Tix Edition</title>
+    <title>RetroStudio | Master Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="cmd-console" style="display:none;">
-        <input type="text" id="cmd-box" placeholder="Owner Console... (/tix [user] [amount])">
+        <input type="text" id="cmd-box" placeholder="Owner Command... (Type /help)">
     </div>
 
     <div id="announcement-bar" style="display:none;"></div>
@@ -18,7 +18,7 @@
             <input type="text" id="search-bar" placeholder="Search..." oninput="filterGames()">
         </div>
         <div class="nav-right">
-            <div id="tix-display" title="Tickets">🎟️ 0</div>
+            <div id="tix-display">🎟️ 0</div>
             <div id="user-display">Guest</div>
         </div>
     </nav>
@@ -38,6 +38,7 @@
     <div id="main-page" class="dashboard" style="display:none;">
         <div class="sidebar">
             <button onclick="showTab('games')">Games</button>
+            <button onclick="showTab('catalog')">🛒 Catalog</button>
             <button onclick="showTab('develop')">Develop</button>
             <button id="admin-btn" onclick="showTab('admin')" style="display:none; color:gold; background:#333;">Owner Panel</button>
             <button onclick="location.reload()">Logout</button>
@@ -49,6 +50,11 @@
                 <div class="game-grid" id="game-grid"></div>
             </div>
 
+            <div id="catalog-tab" style="display:none;">
+                <h2>Catalog</h2>
+                <div class="catalog-grid" id="catalog-grid"></div>
+            </div>
+
             <div id="develop-tab" style="display:none;">
                 <h2>Develop</h2>
                 <button class="blue-btn" onclick="openModal()">+ New Place</button>
@@ -57,8 +63,11 @@
             <div id="admin-tab" style="display:none;">
                 <div class="admin-panel">
                     <h2>Owner Controls</h2>
-                    <p>Press <b>;</b> for Console.</p>
-                    <p>Command: <b>/tix [username] [amount]</b></p>
+                    <p>Press <b>;</b> to open the hacker console.</p>
+                    <div class="cmd-list">
+                        <b>Available Commands:</b><br>
+                        /tix [user] [amt] | /ban [user] | /unban [user] | /alert [msg] | /wipegames
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +75,7 @@
 
     <div id="game-modal" class="modal" style="display:none;">
         <div class="modal-content">
-            <h3>New Place</h3>
+            <h3>Name your Place</h3>
             <input type="text" id="place-name" placeholder="Game Title">
             <button onclick="saveGame()">Create</button>
             <button onclick="closeModal()" style="background:#888;">Cancel</button>
