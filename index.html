@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RetroStudio | Owner Edition</title>
+    <title>RetroStudio | Tix Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="cmd-console" style="display:none;">
-        <input type="text" id="cmd-box" placeholder="Type /help for commands...">
+        <input type="text" id="cmd-box" placeholder="Owner Console... (/tix [user] [amount])">
     </div>
 
     <div id="announcement-bar" style="display:none;"></div>
@@ -15,9 +15,12 @@
     <nav class="navbar">
         <div class="nav-left">
             <span class="logo">RetroStudio</span>
-            <input type="text" id="search-bar" placeholder="Search games..." oninput="filterGames()">
+            <input type="text" id="search-bar" placeholder="Search..." oninput="filterGames()">
         </div>
-        <div id="user-display">Guest</div>
+        <div class="nav-right">
+            <div id="tix-display" title="Tickets">🎟️ 0</div>
+            <div id="user-display">Guest</div>
+        </div>
     </nav>
 
     <div id="auth-page" class="page">
@@ -47,18 +50,15 @@
             </div>
 
             <div id="develop-tab" style="display:none;">
-                <h2>Create Game</h2>
+                <h2>Develop</h2>
                 <button class="blue-btn" onclick="openModal()">+ New Place</button>
             </div>
 
             <div id="admin-tab" style="display:none;">
                 <div class="admin-panel">
                     <h2>Owner Controls</h2>
-                    <p>Commands are active. Press <b>;</b> to use the console.</p>
-                    <div id="command-list-display">
-                        <b>Available Commands:</b><br>
-                        /ban [user] | /unban [user] | /alert [msg] | /clearalerts | /wipegames
-                    </div>
+                    <p>Press <b>;</b> for Console.</p>
+                    <p>Command: <b>/tix [username] [amount]</b></p>
                 </div>
             </div>
         </div>
