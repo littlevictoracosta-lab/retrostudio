@@ -2,28 +2,37 @@
 const admins = ["DynaStudio", "TrustedFriend"]; 
 
 let games = JSON.parse(localStorage.getItem('retroGames')) || [];
+let currentUser = null;
 
-// --- LOGIN & SIGNUP ---
+// --- AUTHENTICATION ---
 function handleSignup() {
     const u = document.getElementById('u-name').value;
     const p = document.getElementById('u-pass').value;
     if(!u || !p) return alert("Fill in details");
     if(localStorage.getItem(u)) return alert("User exists!");
-    localStorage.setItem(u, JSON.stringify({pass: p}));
-    alert("Signed up!");
+
+    // Start users with 10 Tix
+    const userData = { pass: p, tix: 10 };
+    localStorage.setItem(u, JSON.stringify(userData));
+    alert("Signed up! You got 10 Tix starter bonus.");
 }
 
 function handleLogin() {
     const u = document.getElementById('u-name').value;
     const p = document.getElementById('u-pass').value;
 
-    if(localStorage.getItem("ban_" + u)) return alert("THIS ACCOUNT IS TERMINATED.");
+    if(localStorage.getItem("ban_" + u)) return alert("BANNED.");
 
     const data = localStorage.getItem(u);
     if(data && JSON.parse(data).pass === p) {
+        currentUser = u;
+        const userData = JSON.parse(data);
+        
         document.getElementById('auth-page').style.display = 'none';
         document.getElementById('main-page').style.display = 'flex';
         document.getElementById('user-display').innerText = u;
+        
+        updateTixDisplay(userData.tix);
 
         if(admins.includes(u)) document.getElementById('admin-btn').style.display = 'block';
         updateAnnouncements();
@@ -31,9 +40,12 @@ function handleLogin() {
     } else { alert("Invalid login!"); }
 }
 
-// --- COMMAND CONSOLE LOGIC ---
+function updateTixDisplay(amount) {
+    document.getElementById('tix-display').innerText = "🎟️ " + amount;
+}
+
+// --- COMMAND CONSOLE (Press ;) ---
 window.addEventListener("keydown", (e) => {
-    const currentUser = document.getElementById('user-display').innerText;
     if(e.key === ";" && admins.includes(currentUser)) {
         const consoleEl = document.getElementById('cmd-console');
         consoleEl.style.display = consoleEl.style.display === 'none' ? 'block' : 'none';
@@ -49,56 +61,34 @@ document.getElementById('cmd-box').addEventListener("keydown", (e) => {
     }
 });
 
-// --- THE MASTER COMMAND LIST ---
 function executeCommand(input) {
     let args = input.split(" ");
     let cmd = args[0].toLowerCase();
-    let target = args[1];
-    let message = args.slice(1).join(" ");
+    
+    if(cmd === "/tix") {
+        let target = args[1];
+        let amount = parseInt(args[2]);
+        let data = JSON.parse(localStorage.getItem(target));
+        if(data) {
+            data.tix += amount;
+            localStorage.setItem(target, JSON.stringify(data));
+            if(target === currentUser) updateTixDisplay(data.tix);
+            alert("Gave " + amount + " Tix to " + target);
+        }
+    }
+    
+    if(cmd === "/ban") {
+        localStorage.setItem("ban_" + args[1], "true");
+        alert(args[1] + " banned.");
+    }
 
-    switch(cmd) {
-        case "/help":
-            alert("COMMANDS:\n/ban [user]\n/unban [user]\n/alert [text]\n/clearalerts\n/wipegames\n/shutdown");
-            break;
-        
-        case "/ban":
-            localStorage.setItem("ban_" + target, "true");
-            alert(target + " banned.");
-            break;
-
-        case "/unban":
-            localStorage.removeItem("ban_" + target);
-            alert(target + " unbanned.");
-            break;
-
-        case "/alert":
-            localStorage.setItem('announcement', "[SYSTEM]: " + message);
-            updateAnnouncements();
-            break;
-
-        case "/clearalerts":
-            localStorage.removeItem('announcement');
-            updateAnnouncements();
-            break;
-
-        case "/wipegames":
-            if(confirm("Wipe all games?")) {
-                localStorage.removeItem('retroGames');
-                location.reload();
-            }
-            break;
-
-        case "/shutdown":
-            localStorage.setItem('announcement', "PLATFORM SHUTTING DOWN FOR MAINTENANCE");
-            updateAnnouncements();
-            break;
-
-        default:
-            alert("Unknown command. Type /help");
+    if(cmd === "/alert") {
+        localStorage.setItem('announcement', "[SYSTEM]: " + args.slice(1).join(" "));
+        updateAnnouncements();
     }
 }
 
-// --- DASHBOARD FUNCTIONS ---
+// --- HELPER FUNCTIONS ---
 function showTab(t) {
     ['games-tab', 'develop-tab', 'admin-tab'].forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById(t + '-tab').style.display = 'block';
