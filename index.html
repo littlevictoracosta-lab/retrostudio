@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RetroStudio | Owner Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="cmd-console" style="display:none;">
+        <input type="text" id="cmd-box" placeholder="Type /help for commands...">
+    </div>
+
+    <div id="announcement-bar" style="display:none;"></div>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="logo">RetroStudio</span>
+            <input type="text" id="search-bar" placeholder="Search games..." oninput="filterGames()">
+        </div>
+        <div id="user-display">Guest</div>
+    </nav>
+
+    <div id="auth-page" class="page">
+        <div class="auth-card">
+            <h1>RetroStudio</h1>
+            <input type="text" id="u-name" placeholder="Username">
+            <input type="password" id="u-pass" placeholder="Password">
+            <div class="btn-row">
+                <button onclick="handleSignup()">Sign Up</button>
+                <button onclick="handleLogin()" class="blue-btn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-page" class="dashboard" style="display:none;">
+        <div class="sidebar">
+            <button onclick="showTab('games')">Games</button>
+            <button onclick="showTab('develop')">Develop</button>
+            <button id="admin-btn" onclick="showTab('admin')" style="display:none; color:gold; background:#333;">Owner Panel</button>
+            <button onclick="location.reload()">Logout</button>
+        </div>
+
+        <div class="content">
+            <div id="games-tab">
+                <h2>Browse Games</h2>
+                <div class="game-grid" id="game-grid"></div>
+            </div>
+
+            <div id="develop-tab" style="display:none;">
+                <h2>Create Game</h2>
+                <button class="blue-btn" onclick="openModal()">+ New Place</button>
+            </div>
+
+            <div id="admin-tab" style="display:none;">
+                <div class="admin-panel">
+                    <h2>Owner Controls</h2>
+                    <p>Commands are active. Press <b>;</b> to use the console.</p>
+                    <div id="command-list-display">
+                        <b>Available Commands:</b><br>
+                        /ban [user] | /unban [user] | /alert [msg] | /clearalerts | /wipegames
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>New Place</h3>
+            <input type="text" id="place-name" placeholder="Game Title">
+            <button onclick="saveGame()">Create</button>
+            <button onclick="closeModal()" style="background:#888;">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
